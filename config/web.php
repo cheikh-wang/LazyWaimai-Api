@@ -40,6 +40,7 @@ $config = [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => [
                         'v1/user',
+                        'v1/address',
                     ],
                 ],
             ]
