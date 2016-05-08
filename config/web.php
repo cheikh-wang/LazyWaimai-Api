@@ -35,10 +35,24 @@ $config = [
                 'site/<action:\w+>' => 'site/<action>',
 
                 '<version:\w+>/oauth/<action:\w+>' => '<version>/oauth/<action>',
+
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => [
+                        'v1/user',
+                    ],
+                ],
             ]
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
+        ],
+        'ucpass' => [
+            'class' => 'app\components\Ucpaas',
+            'accountSid' => '3550344c4a362cffbb14ca55b4683772',
+            'token' => '2e3fcf93c16a77209145f74e3c234532',
+            'appId' => 'a8ef8cf06c1b4cef81ed57d7de7ceead',
+            'templateId' => '12084',
         ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
