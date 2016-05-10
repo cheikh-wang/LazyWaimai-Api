@@ -41,6 +41,7 @@ $config = [
                     'controller' => [
                         'v1/user',
                         'v1/address',
+                        'v1/business',
                     ],
                 ],
             ]

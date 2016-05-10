@@ -1,6 +1,6 @@
 <?php
 
-use app\helpers\Constants;
+use app\components\helpers\Constants;
 
 return [
     'adminEmail' => 'admin@example.com',
@@ -8,5 +8,5 @@ return [
     /**
      * 注册用户的默认头像
      */
-    Constants::USER_DEFAULT_AVATAR => 'http://palmorder-public.stor.sinaapp.com/images/ic_default_avatar.png',
+    'User-Default-avatar' => 'http://palmorder-public.stor.sinaapp.com/images/ic_default_avatar.png',
 ];

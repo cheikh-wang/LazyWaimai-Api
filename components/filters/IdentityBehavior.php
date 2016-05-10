@@ -1,6 +1,6 @@
 <?php
 
-namespace app\filters;
+namespace app\components\filters;
 
 use yii;
 use yii\db\BaseActiveRecord;

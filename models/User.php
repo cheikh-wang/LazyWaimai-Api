@@ -4,7 +4,7 @@ namespace app\models;
 
 use Yii;
 use yii\db\ActiveRecord;
-use app\helpers\Validator;
+use app\components\helpers\Validator;
 use yii\web\IdentityInterface;
 use yii\behaviors\TimestampBehavior;
 

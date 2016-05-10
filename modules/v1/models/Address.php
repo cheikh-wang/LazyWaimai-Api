@@ -5,7 +5,7 @@ namespace app\modules\v1\models;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
-use app\filters\IdentityBehavior;
+use app\components\filters\IdentityBehavior;
 
 /**
  * This is the model class for table "address".

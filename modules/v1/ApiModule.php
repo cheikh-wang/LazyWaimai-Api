@@ -5,7 +5,7 @@ namespace app\modules\v1;
 use Yii;
 use yii\base\Module;
 use yii\web\NotFoundHttpException;
-use app\helpers\Constants;
+use app\components\helpers\Constants;
 
 
 class ApiModule extends Module {
