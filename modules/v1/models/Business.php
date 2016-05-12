@@ -102,4 +102,15 @@ class Business extends ActiveRecord {
 
         return $fields;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function extraFields() {
+        return ['activity_info'];
+    }
+
+    public function getActivity_info() {
+        return BusinessActivity::discountInfoList($this->id);
+    }
 }

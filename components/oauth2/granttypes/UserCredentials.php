@@ -13,6 +13,7 @@ use app\components\oauth2\BaseModel;
 use app\components\oauth2\models\AccessToken;
 use app\components\oauth2\models\RefreshToken;
 use app\components\oauth2\Exception;
+use yii\web\BadRequestHttpException;
 
 /**
  *
@@ -93,6 +94,7 @@ class UserCredentials extends BaseModel {
 
         return  [
             'access_token' => $accessToken->access_token,
+            'user_id' => $accessToken->user_id,
             'expires_in' => $this->accessTokenLifetime,
             'token_type' => $this->tokenType,
             'scope' => $refreshToken->scope,
@@ -106,21 +108,21 @@ class UserCredentials extends BaseModel {
 
     public function validatePassword($attribute) {
         if (!$this->getUser()->validatePassword($this->password)) {
-            $this->addError($attribute, 'The client credentials are invalid');
+            throw new BadRequestHttpException('帐号或者密码错误');
         }
     }
 
     /**
      * @return User
-     * @throws Exception
+     * @throws BadRequestHttpException
      */
     public function getUser() {
         if (is_null($this->_user)) {
             if (empty($this->username)) {
-                $this->errorServer('The request is missing "username" parameter');
+                throw new BadRequestHttpException('缺少参数:username');
             }
             if (!$this->_user = User::findByUsername($this->username)) {
-                $this->errorServer('The username is invalid');
+                throw new BadRequestHttpException('不存在该用户名');
             }
         }
         return $this->_user;

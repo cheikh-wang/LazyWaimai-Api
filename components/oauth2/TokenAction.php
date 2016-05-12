@@ -10,6 +10,7 @@ namespace app\components\oauth2;
 use yii;
 use yii\base\Action;
 use yii\web\Response;
+use yii\web\BadRequestHttpException;
 
 /**
  * 
@@ -30,12 +31,12 @@ class TokenAction extends Action {
     
     public function run() {
         if (!$grantType = BaseModel::getRequestValue('grant_type')) {
-            throw new Exception('The grant type was not specified in the request');
+            throw new BadRequestHttpException('缺少参数:grant_type');
         }
         if (isset($this->grantTypes[$grantType])) {
             $grantModel = Yii::createObject($this->grantTypes[$grantType]);
         } else {
-            throw new Exception("An unsupported grant type was requested", Exception::UNSUPPORTED_GRANT_TYPE);
+            throw new BadRequestHttpException("不支持的grant_type:" . $grantType);
         }
         
         $grantModel->validate();

@@ -36,12 +36,19 @@ $config = [
 
                 '<version:\w+>/oauth/<action:\w+>' => '<version>/oauth/<action>',
 
+                'GET <version:\w+>/<parent_ctl:\w+>/<parent_id:\d+>/<controller:\w+>' =>
+                    '<version>/<controller>/index',
+
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => [
                         'v1/user',
                         'v1/address',
                         'v1/business',
+                        'v1/order',
+                    ],
+                    'extraPatterns' => [
+                        'POST check' => 'check'
                     ],
                 ],
             ]

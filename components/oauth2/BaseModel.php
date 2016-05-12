@@ -5,6 +5,7 @@ namespace app\components\oauth2;
 use yii\base\Model;
 use yii\helpers\ArrayHelper;
 use app\components\oauth2\models\Client;
+use yii\web\BadRequestHttpException;
 
 abstract class BaseModel extends Model {
 
@@ -79,18 +80,18 @@ abstract class BaseModel extends Model {
             return $request->post($param, $request->get($param));
         }
     }
-    
+
     /**
-     *
      * @return Client
+     * @throws BadRequestHttpException
      */
     public function getClient() {
         if (is_null($this->_client)) {
             if (empty($this->client_id)) {
-                $this->errorServer('Unknown client', Exception::INVALID_CLIENT);
+                throw new BadRequestHttpException('缺少参数:client_id');
             }
             if (!$this->_client = Client::findOne(['client_id' => $this->client_id])) {
-                $this->errorServer('Unknown client', Exception::INVALID_CLIENT);
+                throw new BadRequestHttpException('无效的client id');
             }
         }
         return $this->_client;
@@ -102,7 +103,7 @@ abstract class BaseModel extends Model {
     
     public function validateClient_secret($attribute) {
         if (!\Yii::$app->security->compareString($this->getClient()->client_secret, $this->$attribute)) {
-            $this->addError($attribute, 'The client credentials are invalid');
+            throw new BadRequestHttpException('无效的client secret');
         }
     }
     
