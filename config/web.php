@@ -46,6 +46,7 @@ $config = [
                         'v1/address',
                         'v1/business',
                         'v1/order',
+                        'v1/favorite',
                     ],
                     'extraPatterns' => [
                         'POST check' => 'check'
