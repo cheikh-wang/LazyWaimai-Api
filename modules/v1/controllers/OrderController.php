@@ -62,6 +62,12 @@ class OrderController extends ActiveController {
             'modelClass' => $this->modelClass,
             'checkAccess' => [$this, 'checkAccess'],
         ];
+        $actions['update'] = [
+            'class' => 'yii\rest\UpdateAction',
+            'modelClass' => $this->modelClass,
+            'checkAccess' => [$this, 'checkAccess'],
+            'scenario' => $this->updateScenario,
+        ];
 
         return $actions;
     }
@@ -74,6 +80,7 @@ class OrderController extends ActiveController {
             'index' => ['GET'],
             'view' => ['GET'],
             'create' => ['POST'],
+            'update' => ['PUT', 'PATCH'],
             'check' => ['POST']
         ];
     }
@@ -87,8 +94,12 @@ class OrderController extends ActiveController {
             'query' => Order::find()->where([
                 'and',
                 ['user_id' => Yii::$app->user->id],
-                ['>', 'status', Order::STATUS_WAIT_SUBMIT]
-            ])->orderBy('created_at desc'),
+                ['>', 'status', Order::STATUS_WAIT_SUBMIT]])
+                ->orderBy('created_at desc'),
+            'pagination' => [
+                'pageParam' => 'page',
+                'pageSizeParam' => 'size'
+            ]
         ]);
     }
 

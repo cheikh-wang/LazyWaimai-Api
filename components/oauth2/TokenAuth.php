@@ -9,6 +9,7 @@ namespace app\components\oauth2;
 
 use yii\filters\auth\AuthMethod;
 use app\components\oauth2\models\AccessToken;
+use yii\web\UnauthorizedHttpException;
 
 /**
  * TokenAuth is an action filter that supports the authentication method based on the OAuth2 Access Token.
@@ -55,7 +56,7 @@ class TokenAuth extends AuthMethod {
         $identity = $identityClass::findIdentity($accessToken->user_id);
 
         if (empty($identity)) {
-            throw new Exception('User is not found.', Exception::ACCESS_DENIED);
+            throw new UnauthorizedHttpException('User is not found.');
         }
         $user->setIdentity($identity);
 
@@ -63,23 +64,8 @@ class TokenAuth extends AuthMethod {
     }
 
     /**
-     * @inheritdoc
-     */
-    public function challenge($response) {
-        $response->getHeaders()->set('WWW-Authenticate', "Bearer realm=\"{$this->realm}\"");
-    }
-    
-    /**
-     * @inheritdoc
-     */
-    public function handleFailure($response) {
-        throw new Exception('You are requesting with an invalid credential.');
-    }
-    
-    /**
-     *
-     * @throws Exception
-     * @return \app\components\oauth2\models\AccessToken
+     * @return AccessToken
+     * @throws UnauthorizedHttpException
      */
     protected function getAccessToken() {
         if (is_null($this->_accessToken)) {
@@ -93,26 +79,26 @@ class TokenAuth extends AuthMethod {
             // Check that exactly one method was used
             $methodsCount = isset($authHeader) + isset($postToken) + isset($getToken);
             if ($methodsCount > 1) {
-                throw new Exception('Only one method may be used to authenticate at a time (Auth header, POST or GET).');
+                throw new UnauthorizedHttpException('Only one method may be used to authenticate at a time (Auth header, POST or GET).');
             } elseif ($methodsCount == 0) {
-                throw new Exception('The access token was not found.');
+                throw new UnauthorizedHttpException('The access token was not found.');
             }
             // HEADER: Get the access token from the header
             if ($authHeader) {
                 if (preg_match("/^Bearer\\s+(.*?)$/", $authHeader, $matches)) {
                     $token = $matches[1];
                 } else {
-                    throw new Exception('Malformed auth header.');
+                    throw new UnauthorizedHttpException('Malformed auth header.');
                 }
             } else {
                 // POST: Get the token from POST data
                 if ($postToken) {
                     if(!$request->isPost)
-                        throw new Exception('When putting the token in the body, the method must be POST.');
+                        throw new UnauthorizedHttpException('When putting the token in the body, the method must be POST.');
     
                     // IETF specifies content-type. NB: Not all web servers populate this _SERVER variable
                     if($request->contentType != 'application/x-www-form-urlencoded')
-                        throw new Exception('The content type for POST requests must be "application/x-www-form-urlencoded"');
+                        throw new UnauthorizedHttpException('The content type for POST requests must be "application/x-www-form-urlencoded"');
                     $token = $postToken;
                 } else {
                     $token = $getToken;
@@ -120,13 +106,20 @@ class TokenAuth extends AuthMethod {
             }
             /** @var $accessToken AccessToken */
             if (!$accessToken = AccessToken::findOne(['access_token'=>$token])) {
-                throw new Exception('The access token provided is invalid.', Exception::INVALID_GRANT);
+                throw new UnauthorizedHttpException('无效的Access Token.');
             }
             if ($accessToken->expires < time()) {
-                throw new Exception('The access token provided has expired.', Exception::INVALID_GRANT);
+                throw new UnauthorizedHttpException('您的登录身份已过期,请重新登录.');
             }
             $this->_accessToken = $accessToken;
         }
         return $this->_accessToken;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function challenge($response) {
+        $response->getHeaders()->set('WWW-Authenticate', "Bearer realm=\"{$this->realm}\"");
     }
 }

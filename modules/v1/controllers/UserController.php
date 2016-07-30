@@ -8,7 +8,7 @@ use yii\web\ForbiddenHttpException;
 use yii\web\BadRequestHttpException;
 use yii\web\ServerErrorHttpException;
 use app\models\User;
-use app\helpers\Constants;
+use app\components\helpers\Constants;
 use app\components\Ucpaas;
 use app\modules\v1\models\Code;
 use app\components\oauth2\TokenAuth;
@@ -37,6 +37,7 @@ class UserController extends ActiveController {
         return [
             'view' => ['GET', 'HEAD'],
             'create' => ['POST'],
+            'update' => ['PUT', 'PATCH'],
         ];
     }
 
@@ -50,6 +51,12 @@ class UserController extends ActiveController {
                 'modelClass' => $this->modelClass,
                 'checkAccess' => [$this, 'checkAccess'],
             ],
+            'update' => [
+                'class' => 'yii\rest\UpdateAction',
+                'modelClass' => $this->modelClass,
+                'checkAccess' => [$this, 'checkAccess'],
+                'scenario' => $this->updateScenario,
+            ],
         ];
     }
 
@@ -61,11 +68,12 @@ class UserController extends ActiveController {
      * @throws ServerErrorHttpException
      */
     public function actionCreate() {
-        // 获取参数
+        // 获取操作参数
         $action = Yii::$app->request->getBodyParam('action');
         if (empty($action)) {
             throw new BadRequestHttpException('缺少必需的参数: action');
         }
+        // 根据操作参数进行分发处理
         if ($action == 'send_code') {
             return $this->_sendSmsCode();
         } else if ($action == 'verify_code') {
@@ -131,17 +139,17 @@ class UserController extends ActiveController {
             throw new BadRequestHttpException('缺少必需的参数: code');
         }
         // 获取验证码的信息
-        $model = Code::findOne(['mobile' => $mobile, 'action_sign' => 'register']);
+        $model = Code::findOne([
+            'mobile' => $mobile,
+            'action_sign' => 'register',
+            'code' => $code
+        ]);
         if ($model === null) {
-            throw new ForbiddenHttpException('您还没有获取过验证码');
+            throw new ForbiddenHttpException('验证码输入错误,请重新输入');
         }
         // 判断是否失效
         if (time() - $model['created_at'] > $model['valid_second']) {
             throw new ForbiddenHttpException('您的验证码已过期,请重新获取');
-        }
-        // 检查验证码是否一致
-        if ($code !== $model['code']) {
-            throw new ForbiddenHttpException('验证码输入错误,请重新输入');
         }
 
         return true;
@@ -172,7 +180,7 @@ class UserController extends ActiveController {
             throw new ServerErrorHttpException('系统异常,请重试');
         }
 
-        return $model;
+        return true;
     }
 
     /**

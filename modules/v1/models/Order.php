@@ -22,7 +22,7 @@ use app\components\filters\IdentityBehavior;
  * @property string $consignee
  * @property string $phone
  * @property string $address
- * @property string $pay_method
+ * @property integer $pay_method
  * @property string $remark
  * @property string $booked_at
  * @property integer $created_at
@@ -63,10 +63,9 @@ class Order extends ActiveRecord {
      */
     public function rules() {
         return [
-            [['cart_id', 'business_id', 'order_num', 'status', 'origin_price', 'discount_price', 'total_price', 'consignee', 'phone', 'address', 'pay_method'], 'required'],
-            [['cart_id', 'business_id', 'user_id', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['cart_id', 'business_id', 'order_num', 'status', 'pay_method', 'origin_price', 'discount_price', 'total_price', 'consignee', 'phone', 'address'], 'required'],
+            [['cart_id', 'business_id', 'user_id', 'pay_method', 'status', 'created_at', 'updated_at'], 'integer'],
             [['origin_price', 'discount_price', 'total_price'], 'number'],
-            [['pay_method'], 'string'],
             [['order_num'], 'string', 'max' => 50],
             [['consignee', 'phone', 'booked_at'], 'string', 'max' => 20],
             [['address'], 'string', 'max' => 100],

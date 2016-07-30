@@ -47,6 +47,10 @@ class BusinessController extends ActiveController {
 
         return new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageParam' => 'page',
+                'pageSizeParam' => 'size'
+            ]
         ]);
     }
 }

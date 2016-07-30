@@ -8,5 +8,5 @@ return [
     /**
      * 注册用户的默认头像
      */
-    'User-Default-avatar' => 'http://palmorder-public.stor.sinaapp.com/images/ic_default_avatar.png',
+    'User-Default-avatar' => 'http://api.lazywaimai.com/images/default_avatar.png',
 ];

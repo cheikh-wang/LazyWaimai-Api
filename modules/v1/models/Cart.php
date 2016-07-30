@@ -12,7 +12,7 @@ use yii\behaviors\TimestampBehavior;
  * @property integer $id
  * @property integer $business_id
  * @property integer $last_address_id
- * @property string $pay_method
+ * @property integer $pay_method
  * @property double $origin_price
  * @property double $discount_price
  * @property double $total_price
@@ -43,8 +43,7 @@ class Cart extends ActiveRecord {
     public function rules() {
         return [
             [['business_id', 'last_address_id', 'pay_method', 'origin_price', 'discount_price', 'total_price'], 'required'],
-            [['business_id', 'last_address_id', 'created_at', 'updated_at'], 'integer'],
-            [['pay_method'], 'string'],
+            [['business_id', 'last_address_id', 'pay_method', 'created_at', 'updated_at'], 'integer'],
             [['origin_price', 'discount_price', 'total_price'], 'number'],
         ];
     }
