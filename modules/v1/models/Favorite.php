@@ -67,4 +67,8 @@ class Favorite extends ActiveRecord {
 
         return $fields;
     }
+
+    public function getBusiness() {
+        return $this->hasOne(Business::className(), ['id' => 'business_id']);
+    }
 }

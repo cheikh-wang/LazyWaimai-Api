@@ -73,7 +73,10 @@ class FavoriteController extends ActiveController {
      */
     public function prepareDataProvider() {
         return new ActiveDataProvider([
-            'query' => Favorite::find()->where(['user_id' => Yii::$app->user->id])->orderBy('created_at desc'),
+            'query' => Favorite::find()
+                ->joinWith('business')
+                ->where(['user_id' => Yii::$app->user->id])
+                ->orderBy('created_at desc'),
             'pagination' => [
                 'pageParam' => 'page',
                 'pageSizeParam' => 'size'
