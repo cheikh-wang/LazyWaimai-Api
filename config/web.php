@@ -14,8 +14,10 @@ $config = [
     ],
     'components' => [
         'request' => [
-            // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => '5opbkVM6PYmVxcyNvHG1wK06fkIh0vYG',
+            'parsers' => [
+                'application/json' => 'yii\web\JsonParser'
+            ],
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -47,6 +49,7 @@ $config = [
                         'v1/business',
                         'v1/order',
                         'v1/favorite',
+                        'v1/file',
                     ],
                     'extraPatterns' => [
                         'POST check' => 'check'
@@ -63,6 +66,13 @@ $config = [
             'token' => '2e3fcf93c16a77209145f74e3c234532',
             'appId' => 'a8ef8cf06c1b4cef81ed57d7de7ceead',
             'templateId' => '12084',
+        ],
+        'qiniu' => [
+            'class' => 'app\components\QiNiu',
+            'accessKey' => 'jqg0WMfuswsDOXwEywf_imIMl0iWGPPM5gRU7zfv',
+            'secretKey' => 'Q0iJyLo1NcwTf5RVx-qQtqvAXPcfDGq38uJRXNX3',
+            'bucket' => 'lazywaimai',
+            'domain' => 'ocd605cmo.bkt.clouddn.com',
         ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
