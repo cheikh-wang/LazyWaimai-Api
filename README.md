@@ -1,6 +1,6 @@
 LazyWaimai-Api 
 ==========
-** 此项目是本人学习时开发的系统懒人外卖的API端，为[Android客户端](https://github.com/cheikh-wang/LazyWaimai-Android)提供API服务，基于 [Yii2](https://github.com/yiisoft/yii2) 框架实现的。 **
+此项目是本人学习时开发的系统懒人外卖的API端，为[Android客户端](https://github.com/cheikh-wang/LazyWaimai-Android)提供API服务，基于 [Yii2](https://github.com/yiisoft/yii2) 框架实现的。
 
 环境条件
 -------
