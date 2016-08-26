@@ -1,89 +1,58 @@
-Yii 2 Basic Application Template
-================================
+LazyWaimai-Api 
+==========
+** 此项目是本人学习时开发的系统懒人外卖的API端，为[Android客户端](https://github.com/cheikh-wang/LazyWaimai-Android)提供API服务，基于 [Yii2](https://github.com/yiisoft/yii2) 框架实现的。 **
 
-Yii 2 Basic Application Template is a skeleton Yii 2 application best for
-rapidly creating small projects.
+环境条件
+-------
++ PHP版本必须大于或等于php5.4
 
-The template contains the basic features including user login/logout and a contact page.
-It includes all commonly used configurations that would allow you to focus on adding new
-features to your application.
-
-
-DIRECTORY STRUCTURE
--------------------
-
-      assets/             contains assets definition
-      commands/           contains console commands (controllers)
-      config/             contains application configurations
-      controllers/        contains Web controller classes
-      mail/               contains view files for e-mails
-      models/             contains model classes
-      runtime/            contains files generated during runtime
-      tests/              contains various tests for the basic application
-      vendor/             contains dependent 3rd-party packages
-      views/              contains view files for the Web application
-      web/                contains the entry script and Web resources
-
-
-
-REQUIREMENTS
-------------
-
-The minimum requirement by this application template that your Web server supports PHP 5.4.0.
-
-
-INSTALLATION
-------------
-
-### Install from an Archive File
-
-Extract the archive file downloaded from [yiiframework.com](http://www.yiiframework.com/download/) to
-a directory named `basic` that is directly under the Web root.
-
-You can then access the application through the following URL:
-
-~~~
-http://localhost/basic/web/
-~~~
-
-
-### Install via Composer
-
-If you do not have [Composer](http://getcomposer.org/), you may install it by following the instructions
-at [getcomposer.org](http://getcomposer.org/doc/00-intro.md#installation-nix).
-
-You can then install this application template using the following command:
-
-~~~
-php composer.phar global require "fxp/composer-asset-plugin:1.0.0-beta2"
-php composer.phar create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
-~~~
-
-Now you should be able to access the application through the following URL, assuming `basic` is the directory
-directly under the Web root.
-
-~~~
-http://localhost/basic/web/
-~~~
-
-
-CONFIGURATION
--------------
-
-### Database
-
-Edit the file `config/db.php` with real data, for example:
-
-```php
-return [
-    'class' => 'yii\db\Connection',
-    'dsn' => 'mysql:host=localhost;dbname=yii2basic',
-    'username' => 'root',
-    'password' => '1234',
-    'charset' => 'utf8',
-];
+安装
+-------
+#### 1.clone到本地
 ```
+git clone git@github.com:cheikh-wang/LazyWaimai-Api.git
+```
+#### 2.配置数据库
+```
+cd LazyWaimai-Api
+vi config/web.php
+```
+#### 3.安装依赖
+```
+composer install
+```
+#### 4.初始化项目
+```
+./yii init
+```
+#### 5.配置服务器
+```
+配置nginx/apache的webroot指向LazyWaimai-Api/web
+```
+其他配置
+-------
+#### 1.短信服务的配置
+###### 本项目的短信服务是使用的[云之讯](http://www.ucpaas.com)，请自行注册账户并按如下方式配置：
 
-**NOTE:** Yii won't create the database for you, this has to be done manually before you can access it.
+编辑config/web.php
 
-Also check and edit the other files in the `config/` directory to customize your application.
+```
+'ucpass' => [
+	'class' => 'app\components\Ucpaas',
+    'accountSid' => '修改为你的云之讯Account Sid',
+    'token' => '修改为你的云之讯Auth Token',
+    'appId' => '修改为你的云之讯应用ID',
+    'templateId' => '修改为你的云之讯短信模板ID',
+],
+```
+#### 2.七牛云的配置
+###### 本项目的图片上传服务是使用的[七牛](http://www.qiniu.com)，请自行注册账户并按如下方式配置：
+```
+'qiniu' => [
+	'class' => 'app\components\QiNiu',
+	'accessKey' => '修改为你的AccessKey',
+	'secretKey' => '修改为你的SecretKey',
+	'bucket' => '修改为你的空间名',
+	'domain' => '修改为你的域名',
+],
+```
