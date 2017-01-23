@@ -8,14 +8,12 @@ use yii\data\ActiveDataProvider;
 use yii\web\ForbiddenHttpException;
 use yii\web\BadRequestHttpException;
 use yii\web\ServerErrorHttpException;
-use yii\base\InvalidParamException;
 use app\models\User;
 use app\components\helpers\Constants;
-use app\components\Ucpaas;
 use app\modules\v1\models\Code;
 use app\components\oauth2\TokenAuth;
-use app\components\helpers\Validator;
 use app\modules\v1\models\Favorite;
+use app\modules\v1\models\RegisterSendSmsForm;
 
 class UserController extends ActiveController {
 
@@ -100,38 +98,13 @@ class UserController extends ActiveController {
      * @throws BadRequestHttpException
      */
     private function _sendSmsCode() {
-        // 获取参数
-        $mobile = Yii::$app->request->getBodyParam('mobile');
-        if (empty($mobile)) {
-            throw new BadRequestHttpException('缺少必需的参数: mobile');
-        } else if (!Validator::isMobile($mobile)) {
-            throw new InvalidParamException('无效的手机号: ' . $mobile);
-        }
-        // 判断手机号是否已被注册
-        $model = User::findOne(['mobile' => $mobile]);
-        if ($model != null) {
-            throw new BadRequestHttpException('该手机号已被注册');
-        }
-        // 生成验证码并存到数据库
-        $verifyCode = (string) mt_rand(100000, 999999);
-        $validMinutes = 30;
-        $model = new Code();
-        $model->mobile = $mobile;
-        $model->code = $verifyCode;
-        $model->action_sign = 'register';
-        $model->valid_second = $validMinutes * 60;
-        $model->created_at = time();
-        if ($model->save() === false) {
-            throw new ServerErrorHttpException('验证码发送失败,请重试');
-        }
-        // 调用云之讯组件发送验证码
-        /** @var $ucpass Ucpaas */
-        $ucpass = Yii::$app->ucpass;
-        $ucpass->templateSMS($mobile, $verifyCode.','.$validMinutes);
-        if ($ucpass->state == Ucpaas::STATUS_SUCCESS) {
+        $form = new RegisterSendSmsForm();
+        $form->mobile = Yii::$app->request->getBodyParam('mobile');
+        if ($form->sendSms()) {
             return true;
         } else {
-            throw new ServerErrorHttpException($ucpass->message);
+            $message = $form->getFirstError('mobile');
+            throw new BadRequestHttpException($message);
         }
     }
 
