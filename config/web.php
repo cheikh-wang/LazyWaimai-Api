@@ -12,7 +12,7 @@ $config = [
             'class' => 'app\modules\service\ServiceModule',
         ],
         'v1' => [
-            'class' => 'app\modules\v1\ApiModule'
+            'class' => 'app\modules\v1\Module'
         ],
     ],
     'components' => [

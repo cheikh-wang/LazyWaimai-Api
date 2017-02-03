@@ -3,26 +3,39 @@
 namespace app\modules\v1;
 
 use Yii;
-use yii\base\Module;
+use yii\web\Response;
 use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use app\components\helpers\Constants;
 use app\components\oauth2\models\Client;
+use yii\filters\ContentNegotiator;
 
 
-class ApiModule extends Module {
+class Module extends \yii\base\Module {
 
     const HASH_ALGO = 'sha256';
 
     /**
      * @inheritdoc
      */
-    public $controllerNamespace = 'app\modules\v1\controllers';
+    public function behaviors()
+    {
+        return [
+            'contentNegotiator' => [
+                'class' => ContentNegotiator::className(),
+                'formats' => [
+                    'application/json' => Response::FORMAT_JSON,
+                    'application/xml' => Response::FORMAT_XML,
+                ],
+            ],
+        ];
+    }
 
     /**
      * @inheritdoc
      */
-    public function beforeAction($action) {
+    public function beforeAction($action)
+    {
         if (parent::beforeAction($action)) {
             $httpTimeStamp = Yii::$app->request->headers->get(Constants::HTTP_TIMESTAMP);
             $versionName = Yii::$app->request->headers->get(Constants::HTTP_APP_VERSION);
@@ -54,20 +67,20 @@ class ApiModule extends Module {
      * @return bool
      */
     private function verifySignature($signature, $appKey) {
-        return $signature === $this->getSignature($appKey);
+        $client = Client::findOne(['client_id' => $appKey]);
+        if ($client == null) {
+            return false;
+        }
+
+        return $signature === $this->getSignature($client['client_secret']);
     }
 
     /**
      * 获取请求签名
-     * @param $appKey
+     * @param $secret
      * @return string
      */
-    private function getSignature($appKey) {
-        $client = Client::find()->where(['client_id' => $appKey])->one();
-        if ($client == null) {
-            return '';
-        }
-
+    private function getSignature($secret) {
         // 收集参数
         $params = [];
         $this->collectQueryParameters($params);
@@ -76,10 +89,10 @@ class ApiModule extends Module {
         // 生成源串
         $path = $this->getRequestPath();
         $serialParameters = $this->getSerialParameters($params, false);
-        $source = $path . '&' . $serialParameters . '&' . $client['client_secret'];
+        $source = $path . '&' . $serialParameters . '&' . $secret;
 
         // 使用HMAC-SHA1算法将源串进行加密
-        $encrypted = hash_hmac(self::HASH_ALGO, $source, $client['client_secret']);
+        $encrypted = hash_hmac(self::HASH_ALGO, $source, $secret);
 
         // 将加密后的字符串进行Base64编码
         $signature = base64_encode($encrypted);

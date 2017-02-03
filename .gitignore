@@ -15,6 +15,9 @@ Thumbs.db
 # composer vendor dir
 /vendor
 
+# runtime files
+/runtime
+
 # composer itself is not needed
 composer.phar
 
