@@ -19,7 +19,7 @@ git clone https://github.com/cheikh-wang/LazyWaimai-Api.git
 
 ```
 cd LazyWaimai-Api
-vi config/web.php
+vi config/db.php
 ```
 #### 3.安装依赖
 ```
