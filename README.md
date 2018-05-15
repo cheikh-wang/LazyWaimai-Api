@@ -22,16 +22,36 @@ cd LazyWaimai-Api
 vi config/db.php
 ```
 #### 3.安装依赖
+
+本项目使用composer管理依赖,所以需要先安装composer（已安装请跳过）
+
+```
+curl -sS https://getcomposer.org/installer | php
+mv composer.phar /usr/local/bin/composer
+```
+
+还需要安装composer-asset-plugin（已安装请跳过）
+
+```
+composer global require "fxp/composer-asset-plugin:^1.3.1"
+```
+
+安装项目所需依赖（开始之前请确保composer和composer-asset-plugin已成功安装)
+
 ```
 composer install
 ```
+
 #### 4.给予权限
+
 ```
 chmod 777 runtime
 chmod 777 web/assets
 chmod 755 yii
 ```
+
 #### 5.配置服务器
+
 ```
 配置nginx/apache的webroot指向LazyWaimai-Api/web
 ```
