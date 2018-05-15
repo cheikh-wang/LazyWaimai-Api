@@ -10,7 +10,7 @@ LazyWaimai-Api
 -------
 #### 1.clone到本地
 ```
-git clone git@github.com:cheikh-wang/LazyWaimai-Api.git
+git clone https://github.com/cheikh-wang/LazyWaimai-Api.git
 ```
 #### 2.配置数据库
 1. 将sql文件导入到数据库中
