@@ -26,29 +26,37 @@
         "yiisoft/yii2-faker": "*"
     },
     "config": {
-        "process-timeout": 1800
+        "process-timeout": 1800,
+        "fxp-asset":{
+            "installer-paths": {
+                "npm-asset-library": "vendor/npm",
+                "bower-asset-library": "vendor/bower"
+            }
+        }
     },
     "scripts": {
+        "post-install-cmd": [
+            "yii\\composer\\Installer::postInstall"
+        ],
         "post-create-project-cmd": [
-            "yii\\composer\\Installer::postCreateProject"
+            "yii\\composer\\Installer::postCreateProject",
+            "yii\\composer\\Installer::postInstall"
         ]
     },
     "extra": {
         "yii\\composer\\Installer::postCreateProject": {
+            "generateCookieValidationKey": [
+                "config/web.php"
+            ]
+        },
+        "yii\\composer\\Installer::postInstall": {
             "setPermission": [
                 {
                     "runtime": "0777",
                     "web/assets": "0777",
                     "yii": "0755"
                 }
-            ],
-            "generateCookieValidationKey": [
-                "config/web.php"
             ]
-        },
-        "asset-installer-paths": {
-            "npm-asset-library": "vendor/npm",
-            "bower-asset-library": "vendor/bower"
         }
     }
 }
