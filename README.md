@@ -6,59 +6,73 @@ LazyWaimai-Api
 -------
 + PHP版本必须大于或等于php5.4
 
-安装
+部署
 -------
-#### 1.clone到本地
+
+## windows环境下部署
+
+#### 1.准备工作
+
+###### 搭建好WampServer服务器环境
+
+教程可参考按照[windows下通过Wamp搭建服务器环境.doc](/doc/windows下通过Wamp搭建服务器环境.doc)
+
+###### 安装好php的包管理工具composer
+
+教程可参考[windows下安装composer.doc](/doc/windows下安装composer.doc)
+
+###### 安装好git
+
+教程自行百度
+
+#### 2.clone代码
+
+    假设在上一步准备工作中WampServer被安装在了D:/wamp目录下
+
+打开cmd，以此输入以下命令
+
 ```
+d:
+cd wamp/www
 git clone https://github.com/cheikh-wang/LazyWaimai-Api.git
-```
-#### 2.配置数据库
-1. 将sql文件导入到数据库中
-
-2. 配置数据库：
-
-```
 cd LazyWaimai-Api
-vi config/db.php
 ```
+
 #### 3.安装依赖
-
-本项目使用composer管理依赖,所以需要先安装composer（已安装请跳过）
-
-```
-curl -sS https://getcomposer.org/installer | php
-mv composer.phar /usr/local/bin/composer
-```
-
-还需要安装composer-asset-plugin（已安装请跳过）
 
 ```
 composer global require "fxp/composer-asset-plugin:^1.3.1"
-```
-
-安装项目所需依赖（开始之前请确保composer和composer-asset-plugin已成功安装)
-
-```
 composer install
 ```
 
-#### 4.给予权限
+#### 4.配置数据库
+
+###### 导入sql文件到数据库
+
+参考[导入sql文件.doc](/doc/导入sql文件.doc)
+
+###### 配置数据库
+
+打开config/db.php文件，修改username和password（mysql密码默认为空）
 
 ```
-chmod 777 runtime
-chmod 777 web/assets
-chmod 755 yii
+<?php
+
+return [
+    'class' => 'yii\db\Connection',
+    'dsn' => 'mysql:host=localhost;dbname=lazy_waimai',
+    'username' => 'root',
+    'password' => '',
+    'charset' => 'utf8',
+];
+
 ```
 
-#### 5.配置服务器
+#### 5.其他配置
 
-```
-配置nginx/apache的webroot指向LazyWaimai-Api/web
-```
-其他配置
--------
-#### 1.短信服务的配置
-###### 本项目的短信服务是使用的[云之讯](http://www.ucpaas.com)，请自行注册账户并按如下方式配置：
+###### 1.短信服务的配置
+
+本项目的短信服务是使用的[云之讯](http://www.ucpaas.com)，请自行注册账户并按如下方式配置：
 
 编辑config/web.php
 
@@ -71,8 +85,10 @@ chmod 755 yii
     'templateId' => '修改为你的云之讯短信模板ID',
 ],
 ```
-#### 2.七牛云的配置
-###### 本项目的图片上传服务是使用的[七牛](http://www.qiniu.com)，请自行注册账户并按如下方式配置：
+###### 2.七牛云的配置
+
+本项目的图片上传服务是使用的[七牛](http://www.qiniu.com)，请自行注册账户并按如下方式配置：
+
 ```
 'qiniu' => [
 	'class' => 'app\components\QiNiu',
@@ -82,3 +98,5 @@ chmod 755 yii
 	'domain' => '修改为你的域名',
 ],
 ```
+
+到此项目部署完成，请在浏览器中输入```http://localhost/LazyWaimai-Api/Web```进行查看
