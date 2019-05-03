@@ -5,6 +5,7 @@ namespace app\modules\v1\models;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
+use yii\behaviors\AttributeTypecastBehavior;
 use app\components\filters\IdentityBehavior;
 
 /**
@@ -34,6 +35,7 @@ class Address extends ActiveRecord {
      */
     public function behaviors() {
         return [
+            AttributeTypecastBehavior::className(),
             TimestampBehavior::className(),
             IdentityBehavior::className(),
         ];
